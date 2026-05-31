@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Noble Family Farms — Edit Assembly Guide</title>
+<style>
+  :root{
+    --bg:#0e1012; --panel:#16191d; --panel2:#1c2026; --line:#2a2f37;
+    --txt:#e7ebf0; --mut:#8a93a0; --dim:#5d6470;
+    --accent:#d9a441; --accent2:#7fb069; --hot:#e0683c; --blue:#5aa9e6;
+    --vo:#7fb069; --txtclr:#d9a441;
+    --done:#2f7d4f;
+    --rad:10px; --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:var(--blue);text-decoration:none}
+
+  /* ---------- Header ---------- */
+  header{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,#13161a 70%,rgba(19,22,26,.92));border-bottom:1px solid var(--line);backdrop-filter:blur(6px)}
+  .hwrap{max-width:1180px;margin:0 auto;padding:14px 22px}
+  .htop{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .brand{font-size:20px;font-weight:700;letter-spacing:.2px}
+  .brand .sub{color:var(--accent);font-weight:600}
+  .tagline{color:var(--mut);font-size:13px;margin-top:2px}
+  .spacer{flex:1}
+  .progwrap{min-width:230px}
+  .progmeta{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin-bottom:5px}
+  .progbar{height:8px;border-radius:99px;background:#23282f;overflow:hidden}
+  .progfill{height:100%;width:0;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .35s ease}
+
+  /* ---------- Nav / controls ---------- */
+  .controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:13px}
+  .viewtabs{display:inline-flex;background:var(--panel2);border:1px solid var(--line);border-radius:99px;padding:3px}
+  .viewtabs button{background:none;border:none;color:var(--mut);font:inherit;font-size:13px;font-weight:600;padding:6px 15px;border-radius:99px;cursor:pointer;transition:.15s}
+  .viewtabs button.on{background:var(--accent);color:#1a1205}
+  .filters{display:flex;gap:7px;flex-wrap:wrap}
+  .chip{background:var(--panel2);border:1px solid var(--line);color:var(--mut);font-size:12px;font-weight:600;padding:5px 11px;border-radius:99px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:5px}
+  .chip:hover{color:var(--txt);border-color:#3a414b}
+  .chip.on{background:#26313a;border-color:var(--blue);color:var(--blue)}
+  .chip .dot{width:7px;height:7px;border-radius:99px;background:currentColor;opacity:.85}
+  .btn{background:var(--panel2);border:1px solid var(--line);color:var(--mut);font:inherit;font-size:12px;font-weight:600;padding:6px 12px;border-radius:7px;cursor:pointer;transition:.15s}
+  .btn:hover{color:var(--txt);border-color:#3a414b}
+
+  /* ---------- Timeline strip ---------- */
+  .tlstrip{max-width:1180px;margin:18px auto 0;padding:0 22px}
+  .tlhead{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:var(--dim);margin-bottom:8px}
+  .tl{display:flex;gap:4px;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+  .tlseg{flex:var(--w,1);background:var(--panel2);padding:8px 9px;cursor:pointer;transition:.15s;border-right:1px solid var(--line);min-width:0}
+  .tlseg:last-child{border-right:none}
+  .tlseg:hover{background:#222831}
+  .tlseg .tc{font-family:var(--mono);font-size:10.5px;color:var(--accent)}
+  .tlseg .lbl{font-size:11px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+  .tlseg.full{background:#1f3326}
+  .tlseg.full .lbl{color:var(--accent2)}
+
+  /* ---------- Main ---------- */
+  main{max-width:1180px;margin:0 auto;padding:24px 22px 120px}
+  .seglabel{display:flex;align-items:baseline;gap:12px;margin:30px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+  .seglabel .tc{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:700}
+  .seglabel h2{margin:0;font-size:16px;font-weight:700;letter-spacing:.2px}
+  .seglabel .cnt{color:var(--dim);font-size:12px;margin-left:auto}
+
+  /* ---------- Beat card ---------- */
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--rad);margin-bottom:12px;overflow:hidden;transition:.2s;position:relative}
+  .card.done{opacity:.62}
+  .card.done .chead .ctitle{text-decoration:line-through;text-decoration-color:var(--dim)}
+  .card.hidden{display:none}
+  .chead{display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer;user-select:none}
+  .chk{width:22px;height:22px;border-radius:6px;border:2px solid #3a414b;flex:0 0 auto;display:grid;place-items:center;transition:.15s;background:transparent}
+  .chk:hover{border-color:var(--accent2)}
+  .card.done .chk{background:var(--done);border-color:var(--done)}
+  .chk svg{width:13px;height:13px;opacity:0;transition:.15s}
+  .card.done .chk svg{opacity:1}
+  .bnum{font-family:var(--mono);font-size:12px;color:var(--dim);flex:0 0 auto;width:24px;text-align:center}
+  .ctitle{font-weight:650;font-size:15px;flex:1;min-width:0}
+  .clips{display:flex;gap:5px;flex:0 0 auto}
+  .clip{font-family:var(--mono);font-size:11px;font-weight:700;background:#202732;color:var(--blue);border:1px solid #2c3744;padding:2px 8px;border-radius:6px}
+  .badges{display:flex;gap:5px;flex-wrap:wrap;flex:0 0 auto}
+  .badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:3px 8px;border-radius:99px;white-space:nowrap}
+  .b-must{background:#3a2a10;color:var(--accent);border:1px solid #5a4015}
+  .b-ret{background:#3a1f15;color:var(--hot);border:1px solid #5a2c1c}
+  .b-emot{background:#2a1f33;color:#c79bdb;border:1px solid #3f2d4d}
+  .b-cta{background:#1f3326;color:var(--accent2);border:1px solid #2c4a36}
+  .b-jcut,.b-lcut,.b-nat{background:#1c2733;color:var(--blue);border:1px solid #2a3947}
+  .b-opt{background:#23282f;color:var(--mut);border:1px solid var(--line)}
+  .caret{color:var(--dim);transition:.2s;flex:0 0 auto}
+  .card.open .caret{transform:rotate(90deg)}
+
+  .cbody{display:none;padding:0 16px 16px;border-top:1px solid var(--line)}
+  .card.open .cbody{display:block}
+  .row{display:flex;gap:10px;padding:11px 0;border-bottom:1px solid #20242b}
+  .row:last-child{border-bottom:none}
+  .rlabel{flex:0 0 92px;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--dim);padding-top:2px}
+  .rbody{flex:1;min-width:0}
+  .rbody ul{margin:4px 0 0;padding-left:18px}
+  .rbody li{margin-bottom:3px;color:var(--mut)}
+
+  /* copy blocks */
+  .copyblock{position:relative;border-radius:8px;padding:11px 14px;padding-right:48px;font-size:14px;line-height:1.5}
+  .copyblock.vo{background:#16241a;border:1px solid #284d33;color:#cfe8d4}
+  .copyblock.txt{background:#2a2110;border:1px solid #5a4015;color:#f0d9a3;font-weight:600}
+  .copyblock + .copyblock{margin-top:7px}
+  .copyblock .lbltag{display:block;font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;opacity:.7}
+  .copyblock.vo .lbltag{color:var(--accent2)}
+  .copyblock.txt .lbltag{color:var(--accent)}
+  .copybtn{position:absolute;top:9px;right:9px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:inherit;border-radius:6px;width:30px;height:30px;cursor:pointer;display:grid;place-items:center;transition:.15s}
+  .copybtn:hover{background:rgba(255,255,255,.14)}
+  .copybtn svg{width:15px;height:15px}
+  .copybtn.ok{background:var(--done);border-color:var(--done);color:#fff}
+
+  .editnote{background:#1a1d22;border-left:3px solid var(--accent);border-radius:0 7px 7px 0;padding:9px 13px;font-size:13.5px;color:#d3dae2}
+  .editnote.hot{border-left-color:var(--hot)}
+  .editnote b{color:var(--accent)}
+
+  /* ---------- Source clip view ---------- */
+  .clipgroup{margin-bottom:26px}
+  .clipgrouphead{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+  .clipgrouphead .bigclip{font-family:var(--mono);font-size:22px;font-weight:800;color:var(--blue);background:#19222e;border:1px solid #2a3947;border-radius:10px;padding:6px 16px}
+  .clipgrouphead .desc{color:var(--mut);font-size:13px}
+  .clipgrouphead .cnt{margin-left:auto;color:var(--dim);font-size:12px}
+
+  /* ---------- Reference panels ---------- */
+  .panelgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px;margin-top:8px}
+  .refpanel{background:var(--panel);border:1px solid var(--line);border-radius:var(--rad);padding:16px 18px}
+  .refpanel h3{margin:0 0 12px;font-size:14px;display:flex;align-items:center;gap:8px}
+  .refpanel h3 .ic{width:9px;height:9px;border-radius:3px}
+  .reflist{list-style:none;margin:0;padding:0}
+  .reflist li{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #20242b;font-size:13.5px}
+  .reflist li:last-child{border-bottom:none}
+  .reflist .miniclip{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--blue);flex:0 0 auto}
+  .natchk{width:18px;height:18px;border-radius:5px;border:2px solid #3a414b;flex:0 0 auto;cursor:pointer;display:grid;place-items:center}
+  .natchk.on{background:var(--done);border-color:var(--done)}
+  .natchk svg{width:11px;height:11px;opacity:0}
+  .natchk.on svg{opacity:1}
+  .natchk.on + span{color:var(--dim);text-decoration:line-through}
+
+  .vospine{background:#16241a;border:1px solid #284d33;border-radius:var(--rad);padding:18px 20px;position:relative;white-space:pre-wrap;color:#d3ecd8;font-size:14.5px;line-height:1.7}
+  .vospine .copybtn{top:14px;right:14px}
+
+  /* ---------- Toast ---------- */
+  #toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--accent2);color:#0c1a0f;font-weight:700;font-size:14px;padding:11px 22px;border-radius:99px;box-shadow:0 8px 30px rgba(0,0,0,.5);opacity:0;transition:.3s;z-index:200;pointer-events:none}
+  #toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+  .legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--dim)}
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+  .legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+
+  .hide{display:none!important}
+  .empty{text-align:center;color:var(--dim);padding:50px;font-size:14px}
+  footer{max-width:1180px;margin:0 auto;padding:0 22px 60px;color:var(--dim);font-size:12px;text-align:center}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hwrap">
+    <div class="htop">
+      <div>
+        <div class="brand">Noble Family Farms <span class="sub">— Master Edit Assembly</span></div>
+        <div class="tagline">Behind the gate where Ardmore's local beef starts • Target run: ~2:10 • Vertical short-form</div>
+      </div>
+      <div class="spacer"></div>
+      <div class="progwrap">
+        <div class="progmeta"><span id="progtxt">0 of 28 beats laid</span><span id="progpct">0%</span></div>
+        <div class="progbar"><div class="progfill" id="progfill"></div></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="viewtabs">
+        <button data-view="story" class="on">Story Order</button>
+        <button data-view="clip">By Source Clip</button>
+        <button data-view="ref">VO • Text • Sound</button>
+      </div>
+      <div class="spacer"></div>
+      <div class="filters" id="filters"></div>
+      <button class="btn" id="expandall">Expand all</button>
+      <button class="btn" id="resetprog">Reset progress</button>
+    </div>
+  </div>
+</header>
+
+<div class="tlstrip" id="tlstrip">
+  <div class="tlhead">Final structure — click a segment to jump</div>
+  <div class="tl" id="tl"></div>
+  <div class="legend">
+    <span><i style="background:var(--accent)"></i>Must-use</span>
+    <span><i style="background:var(--hot)"></i>Retention reset</span>
+    <span><i style="background:#c79bdb"></i>Emotional center</span>
+    <span><i style="background:var(--accent2)"></i>CTA / payoff</span>
+    <span><i style="background:var(--blue)"></i>J-cut / L-cut / nat sound</span>
+  </div>
+</div>
+
+<main id="main"></main>
+
+<div id="toast">Copied</div>
+<footer>Pacing rule: fastest in the first 15s • slowest through family history + peaceful cattle • lift again at the beef trailer. Progress saves automatically in this browser.</footer>
+
+<script>
+/* ============ DATA ============ */
+const SEGMENTS = [
+  {id:"s1", tc:"0:00–0:04", label:"Hook", w:4},
+  {id:"s2", tc:"0:04–0:12", label:"Visual farm intro", w:8},
+  {id:"s3", tc:"0:12–0:25", label:"Meet the calves", w:13},
+  {id:"s4", tc:"0:25–0:40", label:"How they raise them", w:15},
+  {id:"s5", tc:"0:40–0:55", label:"Family history", w:15, emotional:true},
+  {id:"s6", tc:"0:55–1:10", label:"Farm life / daily work", w:15},
+  {id:"s7", tc:"1:10–1:25", label:"Mother herd / management", w:15},
+  {id:"s8", tc:"1:25–1:40", label:"How customers buy", w:15},
+  {id:"s9", tc:"1:40–1:58", label:"Trailer / product payoff", w:18},
+  {id:"s10",tc:"1:58–2:10", label:"Farmers market CTA", w:12, cta:true},
+];
+
+const CLIP_DESC = {
+  "0256":"Gate open + stroll through pasture + approach to weaned calves (whistling)",
+  "0257":"Cody standing & whistling, camera pans right to reveal cows",
+  "0258":"Low-angle behind Cody — wind, cows running by (B-roll gold)",
+  "0259":"Calf herd explainer + tiny-in-field + adaptive grazing + family history + sales model",
+  "0260":"Truck tour — horses, passenger-side driving, average day, birds + four-wheeler",
+  "0261":"Mother herd — genetics, bull ratio, brand/electronic ID, driving through cows",
+  "0265":"Beef trailer — wife pulling cuts, inventory growth, ethics, market plug",
+};
+
+const BEATS = [
+ {n:1, seg:"s1", title:"Cold Open / Hook — open the gate", clips:["0256"], tags:["must"],
+  visual:"Start from BEHIND Cody as he lifts the gate and walks into the cow pasture. The gate movement starts the video — action already in progress.",
+  audio:"Natural sound: gate creak, boots on grass, wind. VO begins over the shot.",
+  vo:"We came out to Noble Family Farms in Ardmore to see where local beef actually starts…",
+  txt:"Noble Family Farms | Ardmore, Oklahoma",
+  note:"This is your first <b>movement cut</b>. Don't fade in — drop the viewer mid-action. Let the gate do the work.", noteHot:true },
+
+ {n:2, seg:"s2", title:"Establish Cody as the guide", clips:["0256"], tags:["lcut"],
+  visual:"Cody strolling through the pasture.",
+  audio:"VO continues. If nat audio (wind/boots/cattle) is good, let it breathe a beat before the first interview line.",
+  vo:"…and Cody Noble gave us a look behind the scenes at the cattle, the land, and the family operation behind it.",
+  note:"Transition beat: 'we are arriving' → 'this is our host.'" },
+
+ {n:3, seg:"s2", title:"First cattle moment — whistle at calves", clips:["0256"], tags:["must","ret","nat"],
+  visual:"Cody approaches the recently weaned calves and whistles; calves react.",
+  audio:"Use the natural whistle if it's clean. Let the viewer HEAR it.",
+  txt:"Recently weaned calves",
+  note:"Early retention moment — <b>do not bury it</b>. The whistle gives the farm instant personality.", noteHot:true },
+
+ {n:4, seg:"s2", title:"Cody calls to the cattle — pan to cows", clips:["0257"], tags:["jcut","nat"],
+  visual:"Cody whistles; camera pans right to reveal the cows.",
+  audio:"Natural whistle/cow sounds → transition into Cody's interview audio.",
+  note:"Great spot for an <b>L-cut</b>: start his explanation before the pan finishes, or let the reveal land right as he begins explaining the herd." },
+
+ {n:5, seg:"s3", title:"Introduce the calf herd", clips:["0259"], tags:["jcut"],
+  visual:"Cody talking — but cover HEAVILY with B-roll.",
+  audio:"Cody states what these calves are, then roughly how old / how many. Use only the cleanest 1–2 sentence bite.",
+  note:"Don't go technical this early. Structure: (1) what they are, (2) age/number, (3) cut immediately to fun/beautiful cow visuals.",
+  broll:["Funny cows staring directly at camera","Cows running off toward Cody","Cody walking toward camera, cows behind him","0258 low-angle, wind + cows running by"] },
+
+ {n:6, seg:"s4", title:"Cinematic farm-scale moment", clips:["0259"], tags:["must"],
+  visual:"Cody very small in frame, vast open pasture. Slower, prettier shot — contrast against the tighter cow shots.",
+  audio:"Continue Cody, or use the VO bridge. Moos in background if available.",
+  vo:"The first thing you notice out here is just how much room these animals have.",
+  note:"Sells scale, peace, and openness without over-explaining. Let it sit longer than the cuts around it." },
+
+ {n:7, seg:"s4", title:"Humane / peaceful angle — adaptive grazing", clips:["0259"], tags:["lcut"],
+  visual:"Cody talking; cows grazing/moving; wide pasture shots.",
+  audio:"Core educational beat — use Cody's actual words if clear. The point: they don't park cattle on one worn-out spot; they move them and let the land recover.",
+  vo:"Cody says one of the biggest parts of how they raise their cattle is adaptive grazing.",
+  txt:"Adaptive grazing",
+  note:"One of the two anchor education beats. Keep it concrete, not jargony.",
+  broll:["Cows spread across pasture","Cody walking, cows behind him","Wide field","Cows staring at camera (quick visual reset)"] },
+
+ {n:8, seg:"s4", title:"What a grazing period means", clips:["0259"], tags:["opt"],
+  visual:"Prefer B-roll over your question, unless the question is charming/needed.",
+  audio:"Cody's answer: cows eat ~4–6 hours at a time, multiple times a day — essentially eating throughout the day.",
+  vo:"And yes, their day is basically built around eating.",
+  note:"Keep it fast. Informative but not the heart of the video — it just makes the farm feel specific and real." },
+
+ {n:9, seg:"s5", title:"Family & history — grandparents + COVID", clips:["0259"], tags:["emot"],
+  visual:"Cody interview in pasture or walking shot, mixed with peaceful cattle B-roll.",
+  audio:"Cody: grandparents owned the land → cows originally to feed family → during COVID people asked to buy beef → demand turned it into a real beef operation. Use his actual line if clean.",
+  vo:"But Noble Family Farms didn't start as some big commercial operation.",
+  note:"This is the <b>emotional center</b>. Keep it concise but give it ROOM — this is where the video becomes more than a farm tour.",
+  broll:["Cody walking through field","Long shot, Cody small in frame","Cows calm in pasture","Cody approaching calves"] },
+
+ {n:10, seg:"s5", title:"Old-school vs. their way", clips:["0259"], tags:["opt"],
+  visual:"Cody talking; cows peaceful; pasture footage.",
+  audio:"Short Cody bite comparing traditional/old-school methods to their approach.",
+  note:"Include ONLY if he says it clearly and it supports the humane/local theme. Don't let it get preachy or overly agricultural. Message: thoughtful, modern, humane, land-conscious." },
+
+ {n:11, seg:"s6", title:"Transition into the truck — horses", clips:["0260"], tags:[],
+  visual:"Vehicle moving past horses.",
+  audio:"Cody talks about the horses, or VO transition. Subtle music lift or natural truck audio.",
+  vo:"After the calves, Cody took us around the rest of the property.",
+  note:"Hard location change: walking/pasture → mobile tour. Signal it clearly." },
+
+ {n:12, seg:"s6", title:"In-truck conversation setup", clips:["0260"], tags:[],
+  visual:"Cody driving, shot from the passenger side.",
+  audio:"Cody on the weather heating up, the farm greening up, what the land looks like this time of year.",
+  note:"A reset beat — let the viewer register that we're now touring by vehicle." },
+
+ {n:13, seg:"s6", title:"Average day on the farm", clips:["0260"], tags:["jcut"],
+  visual:"Cut between passenger-side shot, backseat/headrest shot, driving B-roll, horses/fields/cattle.",
+  audio:"Cody answers what a normal day looks like. Use the most relatable parts, not every task.",
+  vo:"So I asked him what a normal day actually looks like out here.",
+  note:"Personality section. Use <b>J-cuts</b> between the two car angles so it feels conversational; cover jump cuts with exterior B-roll. Goal: 'this is a real working day, not a hobby farm.'" },
+
+ {n:14, seg:"s6", title:"Big visual reset — birds + four-wheeler", clips:["0260"], tags:["must","ret"],
+  visual:"Huge flock of birds explodes out of the grass; farmhand on a four-wheeler drives through.",
+  audio:"Natural sound if good; otherwise continue VO underneath.",
+  vo:"And everywhere you look, the farm is alive in a way you don't really get from a grocery store label.",
+  note:"<b>Absolutely use this.</b> A 'whoa, what was that?' reset — place it right after the talking-heavy 'average day' answer.", noteHot:true },
+
+ {n:15, seg:"s7", title:"Introduce the mother cows", clips:["0261"], tags:["nat"],
+  visual:"Pregnant cows / mother herd; cows moving around the truck.",
+  audio:"Cody: these are the mothers of the calves seen earlier — ages two to ten, all pregnant.",
+  vo:"Then we met the other side of the herd — the mothers of those calves from earlier.",
+  txt:"The mother herd",
+  note:"Callback to the opening — viewers saw the calves; now they meet the mothers.",
+  broll:["Nice cow shots","Cow bleating","Cows moving around the truck"] },
+
+ {n:16, seg:"s7", title:"Genetics / cattle type", clips:["0261"], tags:["opt"],
+  visual:"Close-ups of cows; Cody driving/talking; herd moving.",
+  audio:"Cody on the type of cattle and desirable genetics.",
+  txt:"Raised for quality genetics",
+  note:"Quick credibility/expert-detail beat. Keep short unless he says something genuinely interesting." },
+
+ {n:17, seg:"s7", title:"Bulls-to-cow ratio", clips:["0261"], tags:["opt"],
+  visual:"Cows in pasture / truck driving through cows.",
+  audio:"Use only if Cody explains it in an easy-to-understand way.",
+  note:"Nice 'farm math' detail, but optional. Include only if pacing still feels strong." },
+
+ {n:18, seg:"s7", title:"Branding / electronic ID", clips:["0261"], tags:["must"],
+  visual:"Cow with the Noble Family Farms brand — visually strong because it literally says the farm name on the animal.",
+  audio:"Cody explains the cattle are also electronically ID'd.",
+  vo:"Every animal is tracked, identified, and part of the larger herd management system.",
+  txt:"Branded + electronically ID'd",
+  note:"Credibility / traceability beat." },
+
+ {n:19, seg:"s7", title:"Drive through the cattle", clips:["0261"], tags:["must","lcut"],
+  visual:"POV moving through the cows from the truck.",
+  audio:"Cody on the cattle living peacefully / the herd system.",
+  vo:"And honestly, the word that kept coming up while we were out there was peaceful.",
+  note:"Strong transition toward the moral/emotional takeaway: calm, spread out, not packed into a stressful environment." },
+
+ {n:20, seg:"s7", title:"Peaceful cattle / humane close", clips:["0259","0261"], tags:["emot","lcut"],
+  visual:"Calm cows, wide pasture, Cody near the herd, calves.",
+  audio:"Cody or VO on peaceful living.",
+  vo:"These cattle are raised with space, movement, and a pretty quiet life — and that's a huge part of what Cody wants people to understand.",
+  note:"Final pasture <b>thesis</b> before the sales section. Keep it observational — avoid sounding like an animal-rights commercial." },
+
+ {n:21, seg:"s8", title:"Sales-model transition", clips:["0259"], tags:[],
+  visual:"Cody talking in pasture or truck; start transitioning toward the beef trailer if possible.",
+  audio:"Cody: they sell online; customers can buy a whole beef, half beef, or individual cuts; also at the farmers market.",
+  vo:"And the way they sell it is just as direct as the way they raise it.",
+  txt:"Whole beef • Half beef • Individual cuts",
+  note:"Story pivots: 'how it's raised' → 'how people can actually buy it.'" },
+
+ {n:22, seg:"s8", title:"Family-of-four beef amount", clips:["0259"], tags:[],
+  visual:"Cody talking, or B-roll of cattle/trailer/freezer.",
+  audio:"Cody: his family of four goes through about half a beef in a year.",
+  txt:"Family of 4 ≈ half beef / year",
+  note:"Excellent practical detail — makes 'half beef' concrete. Structure: quick question (if needed) → answer → cut to freezer/trailer shots." },
+
+ {n:23, seg:"s9", title:"Move to the beef trailer", clips:["0265"], tags:[],
+  visual:"Exterior or interior of the beef trailer / freezers.",
+  audio:"VO transition or the wife's natural introduction.",
+  vo:"But Noble Family Farms isn't just raising the cattle — they're bringing the finished product straight to customers.",
+  note:"The payoff after the farm tour: we saw the pasture, now we see the product." },
+
+ {n:24, seg:"s9", title:"Wife shows the cuts", clips:["0265"], tags:["ret"],
+  visual:"Wife pulling different cuts from the deep freezers. Cut on each item; use freezer-lid movement and package reveals as natural edit points.",
+  audio:"Her explaining the cuts. If she lists too many, montage it — use the best 4–6 seconds.",
+  txt:"Steaks • Roasts • Ground beef • Individual cuts",
+  note:"Quick, visual, satisfying. <b>No freezer-inventory seminar.</b>" },
+
+ {n:25, seg:"s9", title:"Growth — doubled inventory", clips:["0265"], tags:[],
+  visual:"Freezers, trailer, cuts of beef, her talking.",
+  audio:"Her line about when they started and how they doubled their inventory.",
+  vo:"What started small has grown fast enough that they've already had to expand what they bring with them.",
+  note:"Shows demand + legitimacy — a credibility beat before the CTA." },
+
+ {n:26, seg:"s9", title:"Ethics / why they do it this way", clips:["0265"], tags:["emot"],
+  visual:"Mix trailer shots with callback shots of peaceful cattle.",
+  audio:"Her strongest ethical line — especially tying back to raising cattle well, feeding families, or knowing where your beef comes from.",
+  note:"Powerful right before the final CTA: reminds viewers this is local food with a face and a farm behind it." },
+
+ {n:27, seg:"s10", title:"Farmers market plug", clips:["0265"], tags:["cta"],
+  visual:"Wife in trailer; freezer; cuts; signage if available.",
+  audio:"Cody or wife mentions they'll be at the farmers market.",
+  vo:"You can order from Noble Family Farms online, buy in bulk, pick up individual cuts, or find them at the Ardmore farmers market.",
+  txt:"Find Noble Family Farms at the Ardmore Farmers Market",
+  note:"This is the <b>client objective</b>. Make it clear and practical — do not bury it under a poetic ending." },
+
+ {n:28, seg:"s10", title:"Final montage + broader market plug", clips:["0265","0256","0258","0260","0261"], tags:["cta","must"],
+  visual:"Montage: wife pulling beef • Cody gate callback • cows running/wind • birds flying • branded cow • Cody walking • beef cuts in trailer.",
+  audio:"Final VO.",
+  vo:"And even if you're not filling a freezer, the farmers market is a chance to meet the people behind your food, ask questions, and support local producers right here in Ardmore.",
+  txt:"Support local. Know where your beef comes from.",
+  note:"End on a friendly Cody/wife/trailer shot, OR the gate/pasture callback, OR a clean product/freezer shot if the CTA must be the final image." },
+];
+
+const NAT_SOUND = ["Gate opening / creak","Boots on grass","Cody whistling","Cows mooing / bleating","Wind in the pasture","Birds taking off","Truck driving audio","Freezer lid opening","Beef packages moving"];
+
+const TEXT_OVERLAYS = [
+  ["0256","Noble Family Farms | Ardmore, Oklahoma"],
+  ["0256","Recently weaned calves"],
+  ["0259","Adaptive grazing"],
+  ["0259","Rotating cattle across fresh pasture"],
+  ["0261","The mother herd"],
+  ["0261","Raised for quality genetics"],
+  ["0261","Branded + electronically ID'd"],
+  ["0259","Whole beef • Half beef • Individual cuts"],
+  ["0259","Family of 4 ≈ half beef / year"],
+  ["0265","Steaks • Roasts • Ground beef"],
+  ["0265","Find Noble Family Farms at the Ardmore Farmers Market"],
+  ["0265","Order online or shop in person"],
+  ["0265","Support local. Know where your beef comes from."],
+];
+
+const VO_SPINE = `We came out to Noble Family Farms in Ardmore to see where local beef actually starts.
+
+Cody Noble took us behind the gate and into the pastures where they raise their cattle with space, movement, and a lot of attention to the land.
+
+One of the big things they use is adaptive grazing, which means the cattle aren't just sitting in one spot. They're moved around the property so they can keep grazing fresh pasture while the land has time to recover.
+
+The farm itself goes back to Cody's grandparents, but Noble Family Farms really started growing during COVID, when more people began asking where they could buy beef directly from a local source.
+
+Now they sell whole beef, half beef, and individual cuts online — and for Cody's own family of four, half a beef lasts about a year.
+
+After seeing the cattle, we checked out their portable beef trailer, where they bring steaks, roasts, ground beef, and other cuts straight to customers.
+
+You can find Noble Family Farms online, or meet them in person at the Ardmore Farmers Market — where you're not just buying beef, you're meeting the people who raised it.`;
+
+const FILTERS = [
+  {key:"must", label:"Must-use", cls:"b-must"},
+  {key:"ret",  label:"Retention", cls:"b-ret"},
+  {key:"emot", label:"Emotional", cls:"b-emot"},
+  {key:"cta",  label:"CTA", cls:"b-cta"},
+  {key:"jcut", label:"J-cut", cls:"b-jcut"},
+  {key:"lcut", label:"L-cut", cls:"b-lcut"},
+  {key:"nat",  label:"Nat sound", cls:"b-nat"},
+  {key:"opt",  label:"Optional", cls:"b-opt"},
+];
+const BADGE_LABEL = {must:"Must-use",ret:"Retention",emot:"Emotional",cta:"CTA",jcut:"J-cut",lcut:"L-cut",nat:"Nat sound",opt:"Optional"};
+const BADGE_CLS   = {must:"b-must",ret:"b-ret",emot:"b-emot",cta:"b-cta",jcut:"b-jcut",lcut:"b-lcut",nat:"b-nat",opt:"b-opt"};
+
+/* ============ STATE ============ */
+const LS_DONE="nff_done_v1", LS_NAT="nff_nat_v1";
+let done = JSON.parse(localStorage.getItem(LS_DONE)||"{}");
+let natDone = JSON.parse(localStorage.getItem(LS_NAT)||"{}");
+let view="story";
+let activeFilters=new Set();
+let allOpen=false;
+
+const $=s=>document.querySelector(s);
+const ce=(t,c)=>{const e=document.createElement(t);if(c)e.className=c;return e;};
+const ICON_CHECK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+const ICON_COPY='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+const ICON_CARET='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
+
+/* ============ HELPERS ============ */
+function save(){localStorage.setItem(LS_DONE,JSON.stringify(done));localStorage.setItem(LS_NAT,JSON.stringify(natDone));}
+function doneCount(){return BEATS.filter(b=>done[b.n]).length;}
+function updateProgress(){
+  const c=doneCount(), t=BEATS.length, pct=Math.round(c/t*100);
+  $("#progtxt").textContent=`${c} of ${t} beats laid`;
+  $("#progpct").textContent=pct+"%";
+  $("#progfill").style.width=pct+"%";
+}
+function toast(msg){const el=$("#toast");el.textContent=msg;el.classList.add("show");clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove("show"),1400);}
+function copy(text,btn){
+  navigator.clipboard.writeText(text).then(()=>{
+    toast("Copied to clipboard");
+    if(btn){btn.classList.add("ok");setTimeout(()=>btn.classList.remove("ok"),900);}
+  });
+}
+function beatVisible(b){
+  if(activeFilters.size===0) return true;
+  return b.tags.some(t=>activeFilters.has(t));
+}
+
+/* ============ COPY BLOCK ============ */
+function copyBlock(kind,label,text){
+  const wrap=ce("div","copyblock "+kind);
+  const tag=ce("span","lbltag");tag.textContent=label;
+  wrap.appendChild(tag);
+  wrap.appendChild(document.createTextNode(text));
+  const btn=ce("button","copybtn");btn.innerHTML=ICON_COPY;btn.title="Copy";
+  btn.addEventListener("click",e=>{e.stopPropagation();copy(text,btn);});
+  wrap.appendChild(btn);
+  return wrap;
+}
+
+/* ============ BEAT CARD ============ */
+function beatCard(b,showSeg){
+  const card=ce("div","card");
+  card.dataset.n=b.n;
+  if(done[b.n])card.classList.add("done");
+  if(allOpen)card.classList.add("open");
+  if(!beatVisible(b))card.classList.add("hidden");
+
+  // head
+  const head=ce("div","chead");
+  const chk=ce("div","chk");chk.innerHTML=ICON_CHECK;
+  chk.addEventListener("click",e=>{
+    e.stopPropagation();
+    if(done[b.n])delete done[b.n];else done[b.n]=1;
+    card.classList.toggle("done");save();updateProgress();
+  });
+  const bnum=ce("div","bnum");bnum.textContent=b.n;
+  const title=ce("div","ctitle");title.textContent=b.title;
+  const clips=ce("div","clips");
+  b.clips.forEach(c=>{const el=ce("span","clip");el.textContent=c;clips.appendChild(el);});
+  const badges=ce("div","badges");
+  b.tags.forEach(t=>{const el=ce("span","badge "+BADGE_CLS[t]);el.textContent=BADGE_LABEL[t];badges.appendChild(el);});
+  const caret=ce("div","caret");caret.innerHTML=ICON_CARET;
+  head.append(chk,bnum,title,clips,badges,caret);
+  head.addEventListener("click",()=>card.classList.toggle("open"));
+  card.appendChild(head);
+
+  // body
+  const body=ce("div","cbody");
+  const addRow=(label,node)=>{const r=ce("div","row");const l=ce("div","rlabel");l.textContent=label;const bd=ce("div","rbody");bd.appendChild(node);r.append(l,bd);body.appendChild(r);};
+  const txtNode=s=>{const d=ce("div");d.textContent=s;return d;};
+
+  if(b.visual)addRow("Visual",txtNode(b.visual));
+  if(b.audio)addRow("Audio",txtNode(b.audio));
+  if(b.vo)addRow("VO",copyBlock("vo","Suggested voiceover — click to copy",b.vo));
+  if(b.txt)addRow("On-screen",copyBlock("txt","On-screen text — click to copy",b.txt));
+  if(b.broll){
+    const ul=ce("ul");b.broll.forEach(x=>{const li=ce("li");li.textContent=x;ul.appendChild(li);});
+    addRow("B-roll",ul);
+  }
+  if(b.note){const n=ce("div","editnote"+(b.noteHot?" hot":""));n.innerHTML=b.note;addRow("Edit note",n);}
+  card.appendChild(body);
+  return card;
+}
+
+/* ============ RENDERS ============ */
+function renderStory(){
+  const main=$("#main");main.innerHTML="";
+  SEGMENTS.forEach(seg=>{
+    const beats=BEATS.filter(b=>b.seg===seg.id);
+    const visBeats=beats.filter(beatVisible);
+    if(visBeats.length===0)return;
+    const lbl=ce("div","seglabel");lbl.id="seg-"+seg.id;
+    const tc=ce("span","tc");tc.textContent=seg.tc;
+    const h=ce("h2");h.textContent=seg.label;
+    const cnt=ce("span","cnt");
+    const segDone=beats.filter(b=>done[b.n]).length;
+    cnt.textContent=`${segDone}/${beats.length} done`;
+    lbl.append(tc,h,cnt);
+    main.appendChild(lbl);
+    beats.forEach(b=>main.appendChild(beatCard(b)));
+  });
+  if(!main.children.length)main.innerHTML='<div class="empty">No beats match the active filters.</div>';
+}
+
+function renderClip(){
+  const main=$("#main");main.innerHTML="";
+  const order=["0256","0257","0258","0259","0260","0261","0265"];
+  let any=false;
+  order.forEach(clip=>{
+    const beats=BEATS.filter(b=>b.clips.includes(clip) && beatVisible(b));
+    if(beats.length===0)return;
+    any=true;
+    const grp=ce("div","clipgroup");
+    const gh=ce("div","clipgrouphead");
+    const bc=ce("div","bigclip");bc.textContent=clip;
+    const ds=ce("div","desc");ds.textContent=CLIP_DESC[clip]||"";
+    const cnt=ce("div","cnt");cnt.textContent=`used in ${beats.length} beat${beats.length>1?"s":""}`;
+    gh.append(bc,ds,cnt);
+    grp.appendChild(gh);
+    beats.forEach(b=>grp.appendChild(beatCard(b)));
+    main.appendChild(grp);
+  });
+  if(!any)main.innerHTML='<div class="empty">No beats match the active filters.</div>';
+}
+
+function renderRef(){
+  const main=$("#main");main.innerHTML="";
+  const grid=ce("div","panelgrid");
+
+  // Text overlays
+  const tp=ce("div","refpanel");
+  tp.innerHTML='<h3><span class="ic" style="background:var(--accent)"></span>On-screen text overlays</h3>';
+  const tl=ce("ul","reflist");
+  TEXT_OVERLAYS.forEach(([clip,t])=>{
+    const li=ce("li");
+    const mc=ce("span","miniclip");mc.textContent=clip;
+    const sp=ce("span");sp.textContent=t;sp.style.flex="1";
+    const btn=ce("button","copybtn");btn.style.position="static";btn.style.width="28px";btn.style.height="28px";btn.innerHTML=ICON_COPY;
+    btn.addEventListener("click",()=>copy(t,btn));
+    li.append(mc,sp,btn);tl.appendChild(li);
+  });
+  tp.appendChild(tl);
+
+  // Natural sound checklist
+  const np=ce("div","refpanel");
+  np.innerHTML='<h3><span class="ic" style="background:var(--blue)"></span>Natural sound checklist</h3>';
+  const nl=ce("ul","reflist");
+  NAT_SOUND.forEach((s,i)=>{
+    const li=ce("li");
+    const ck=ce("div","natchk"+(natDone[i]?" on":""));ck.innerHTML=ICON_CHECK;
+    ck.addEventListener("click",()=>{if(natDone[i])delete natDone[i];else natDone[i]=1;ck.classList.toggle("on");save();});
+    const sp=ce("span");sp.textContent=s;sp.style.flex="1";
+    li.append(ck,sp);nl.appendChild(li);
+  });
+  np.appendChild(nl);
+
+  // Must-use shots
+  const mp=ce("div","refpanel");
+  mp.innerHTML='<h3><span class="ic" style="background:var(--accent2)"></span>Must-use shots — prioritize</h3>';
+  const ml=ce("ul","reflist");
+  [["0256","Cody opening the gate"],["0256","Cody whistling at calves"],["0257","Whistle → pan to cows"],
+   ["0258","Low-angle wind / cows running behind Cody"],["0259","Cody tiny in vast field"],
+   ["0260","Birds taking off + four-wheeler"],["0261","Cow with Noble Family Farms brand"],
+   ["0261","Driving through the cows"],["0265","Wife pulling cuts from freezer"],["0265","Beef trailer / market setup"]
+  ].forEach(([clip,t])=>{
+    const li=ce("li");const mc=ce("span","miniclip");mc.textContent=clip;const sp=ce("span");sp.textContent=t;
+    li.append(mc,sp);ml.appendChild(li);
+  });
+  mp.appendChild(ml);
+
+  grid.append(tp,np,mp);
+  main.appendChild(grid);
+
+  // VO spine
+  const vh=ce("div","seglabel");vh.innerHTML='<span class="tc">VO</span><h2>Clean voiceover spine — full read</h2>';
+  main.appendChild(vh);
+  const vs=ce("div","vospine");
+  vs.appendChild(document.createTextNode(VO_SPINE));
+  const btn=ce("button","copybtn");btn.innerHTML=ICON_COPY;btn.title="Copy full VO";
+  btn.addEventListener("click",()=>copy(VO_SPINE,btn));
+  vs.appendChild(btn);
+  main.appendChild(vs);
+}
+
+function render(){
+  if(view==="story")renderStory();
+  else if(view==="clip")renderClip();
+  else renderRef();
+  document.querySelectorAll(".viewtabs button").forEach(b=>b.classList.toggle("on",b.dataset.view===view));
+  $("#filters").classList.toggle("hide",view==="ref");
+  $("#expandall").classList.toggle("hide",view==="ref");
+  $("#tlstrip").classList.toggle("hide",view==="ref");
+}
+
+/* ============ TIMELINE STRIP ============ */
+function buildTL(){
+  const tl=$("#tl");
+  SEGMENTS.forEach(seg=>{
+    const el=ce("div","tlseg"+(seg.emotional?"":"")+(seg.cta?" full":""));
+    el.style.setProperty("--w",seg.w);
+    el.innerHTML=`<div class="tc">${seg.tc}</div><div class="lbl">${seg.label}</div>`;
+    el.addEventListener("click",()=>{
+      if(view!=="story"){view="story";render();}
+      const t=$("#seg-"+seg.id);
+      if(t)t.scrollIntoView({behavior:"smooth",block:"start"});
+    });
+    tl.appendChild(el);
+  });
+}
+
+/* ============ FILTERS ============ */
+function buildFilters(){
+  const f=$("#filters");
+  FILTERS.forEach(fl=>{
+    const c=ce("button","chip");
+    c.innerHTML=`<span class="dot ${fl.cls}" style="background:transparent"></span>${fl.label}`;
+    c.querySelector(".dot").style.background="currentColor";
+    c.dataset.key=fl.key;
+    c.addEventListener("click",()=>{
+      if(activeFilters.has(fl.key))activeFilters.delete(fl.key);else activeFilters.add(fl.key);
+      c.classList.toggle("on");
+      render();
+    });
+    f.appendChild(c);
+  });
+}
+
+/* ============ EVENTS ============ */
+document.querySelectorAll(".viewtabs button").forEach(b=>{
+  b.addEventListener("click",()=>{view=b.dataset.view;render();});
+});
+$("#expandall").addEventListener("click",()=>{
+  allOpen=!allOpen;
+  $("#expandall").textContent=allOpen?"Collapse all":"Expand all";
+  document.querySelectorAll(".card").forEach(c=>c.classList.toggle("open",allOpen));
+});
+$("#resetprog").addEventListener("click",()=>{
+  if(confirm("Reset all checkboxes and natural-sound progress?")){
+    done={};natDone={};save();updateProgress();render();
+  }
+});
+
+/* ============ INIT ============ */
+buildTL();
+buildFilters();
+render();
+updateProgress();
+</script>
+</body>
+</html>
